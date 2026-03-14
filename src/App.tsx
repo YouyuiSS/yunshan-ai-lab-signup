@@ -3,9 +3,13 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { motion, useScroll, useTransform } from 'motion/react';
+
+import AdminDashboard from './AdminDashboard.tsx';
+import { signupsApi } from './api.ts';
 import weLinkQrCode from './assets/welink-31313-qr.png';
+import { emptySignupForm, type SignupFormData } from '../shared/signups.ts';
 
 const Header = () => (
 
@@ -13,7 +17,7 @@ const Header = () => (
     <div className="max-w-[1600px] mx-auto px-8 h-20 flex items-center justify-between">
       <div className="flex items-center gap-4">
         <span className="material-symbols-outlined text-primary text-2xl">labs</span>
-        <h2 className="text-sm font-bold tracking-[0.2em] uppercase">AI Laboratory</h2>
+        <h2 className="text-sm font-bold tracking-[0.12em]">AI 试验场</h2>
       </div>
       <nav className="hidden md:flex items-center gap-10">
         <a className="text-[11px] font-bold tracking-[0.12em] hover:text-primary transition-colors" href="#hero">首页</a>
@@ -125,7 +129,7 @@ const Hero = () => {
         >
           <div className="flex items-center gap-4 mb-12">
             <span className="w-12 h-px bg-primary/50"></span>
-            <span className="text-[11px] font-black uppercase tracking-[0.32em] text-primary">Volume 01 • IT Department AI Lab</span>
+            <span className="text-[11px] font-black uppercase tracking-[0.24em] text-primary">IT Department • AI Lab</span>
           </div>
           <h1 className="text-7xl md:text-9xl font-bold tracking-tighter leading-[0.9] mb-12 text-gradient">
             AI <br />试验场
@@ -163,17 +167,17 @@ const Hero = () => {
             >
               <div className="flex items-center gap-3 mb-4">
                 <span className="material-symbols-outlined text-primary">memory</span>
-                <span className="text-xs font-bold text-slate-300 tracking-wider">TOOL WATCH</span>
+                <span className="text-xs font-bold text-slate-300 tracking-[0.18em]">工具雷达</span>
               </div>
               <div className="space-y-3">
                 <div className="flex justify-between text-[11px] font-mono text-slate-300">
-                  <span>Focus</span>
+                  <span>本周关注</span>
                   <span className="text-primary">Claude Code / OpenClaw</span>
                 </div>
                 <div className="flex justify-between text-[11px] font-mono text-slate-300">
-                  <span>Status</span>
+                  <span>状态</span>
                   <span className="text-green-400 flex items-center gap-1.5">
-                    <span className="size-1.5 rounded-full bg-green-400 animate-[pulse_6s_ease-in-out_infinite]"></span> Tracking
+                    <span className="size-1.5 rounded-full bg-green-400 animate-[pulse_6s_ease-in-out_infinite]"></span> 持续跟进
                   </span>
                 </div>
               </div>
@@ -189,7 +193,7 @@ const Hero = () => {
             >
               <div className="flex items-center gap-3 mb-5">
                 <span className="material-symbols-outlined text-purple-400">account_tree</span>
-                <span className="text-xs font-bold text-slate-300 tracking-wider">IDEA FLOW</span>
+                <span className="text-xs font-bold text-slate-300 tracking-[0.18em]">想法流转</span>
               </div>
               <div className="space-y-3">
                 <div className="h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
@@ -200,8 +204,8 @@ const Hero = () => {
                   />
                 </div>
                 <div className="flex justify-between text-[11px] font-mono text-slate-400">
-                  <span>Signal Review</span>
-                  <span className="text-primary/90">Ideas moving...</span>
+                  <span>当前进度</span>
+                  <span className="text-primary/90">正在认领推进</span>
                 </div>
               </div>
             </motion.div>
@@ -217,12 +221,12 @@ const Hero = () => {
               <div className="flex items-center justify-between mb-3">
                 <div className="flex items-center gap-2">
                   <span className="material-symbols-outlined text-primary text-sm">terminal</span>
-                  <span className="text-[11px] font-bold text-slate-300 tracking-[0.24em]">BUILD IN PROGRESS</span>
+                  <span className="text-[11px] font-bold text-slate-300 tracking-[0.18em]">本周现场</span>
                 </div>
                 <span className="flex size-2 rounded-full bg-green-500 animate-[pulse_6.5s_ease-in-out_infinite]"></span>
               </div>
               <div className="bg-black/60 rounded-lg p-3 font-mono text-[11px] leading-relaxed border border-white/5">
-                <div className="text-slate-500 mb-1"># This week</div>
+                <div className="text-slate-500 mb-1"># 本周进展</div>
                 <div className="text-green-400 flex items-center gap-2">
                   <span className="material-symbols-outlined text-[11px]">check</span>
                   <span>筛值得试的工具</span>
@@ -251,7 +255,7 @@ const About = () => (
       <div className="grid md:grid-cols-12 gap-16 items-center">
         <div className="md:col-span-5">
           <span className="text-[11px] font-black text-slate-500 block mb-6">
-            <span className="uppercase tracking-[0.32em]">Mission</span>
+            <span className="uppercase tracking-[0.28em]">Why This Lab</span>
             <span className="mx-3 text-slate-700">/</span>
             <span>我们为什么做这件事</span>
           </span>
@@ -297,11 +301,11 @@ const About = () => (
             <div className="flex justify-between items-center mb-8 relative z-10">
               <div className="flex items-center gap-2">
                 <span className="size-2 rounded-full bg-green-500 animate-[pulse_6s_ease-in-out_infinite] shadow-[0_0_8px_rgba(34,197,94,0.6)]"></span>
-                <span className="text-[11px] font-mono text-slate-300 tracking-[0.24em]">SYSTEM.SYNC.ACTIVE</span>
+                <span className="text-[11px] font-mono text-slate-300 tracking-[0.18em]">现场正在运转</span>
               </div>
               <div className="flex gap-2">
-                <span className="px-2 py-1 rounded bg-white/5 border border-white/10 text-[11px] font-mono text-slate-300">NODE_01</span>
-                <span className="px-2 py-1 rounded bg-white/5 border border-white/10 text-[11px] font-mono text-slate-300">NODE_02</span>
+                <span className="px-2 py-1 rounded bg-white/5 border border-white/10 text-[11px] font-mono text-slate-300">情报站</span>
+                <span className="px-2 py-1 rounded bg-white/5 border border-white/10 text-[11px] font-mono text-slate-300">实验室</span>
               </div>
             </div>
 
@@ -324,7 +328,7 @@ const About = () => (
                 </svg>
                 <div className="absolute inset-0 flex flex-col items-center justify-center">
                   <span className="text-4xl font-bold text-white tracking-tighter">99<span className="text-xl text-primary">%</span></span>
-                  <span className="text-[11px] font-mono text-slate-400 uppercase mt-1">Alignment</span>
+                  <span className="text-[11px] font-mono text-slate-400 mt-1">推进度</span>
                 </div>
               </div>
 
@@ -403,7 +407,7 @@ const Directions = () => (
               <span className="animate-[ping_4s_ease-in-out_infinite] absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
               <span className="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
             </span>
-            <span className="uppercase tracking-[0.32em]">Now Running</span>
+            <span className="uppercase tracking-[0.28em]">What We're Doing</span>
             <span className="text-slate-700">/</span>
             <span>我们正在做的几件事</span>
           </span>
@@ -474,7 +478,7 @@ const Process = () => (
     <div className="max-w-[1400px] mx-auto relative z-10">
       <div className="max-w-3xl mb-16 md:mb-20">
         <span className="text-[11px] font-black text-slate-500 block mb-6">
-          <span className="uppercase tracking-[0.32em]">How It Works</span>
+          <span className="uppercase tracking-[0.28em]">How It Runs</span>
           <span className="mx-3 text-slate-700">/</span>
           <span>这件事怎么转起来</span>
         </span>
@@ -492,10 +496,10 @@ const Process = () => (
           ['05', '有人认领，一起推进', '感兴趣的人来认领，产品和技术一起补全场景、边界和做法，把想法往前推。'],
           ['06', '能落地的，就留下来', '做成的东西继续用，值得推广的继续推，不合适的也说明白，给下一次少走弯路。'],
         ].map(([index, title, description]) => (
-          <div key={index} className="rounded-[2rem] bg-white/[0.035] p-8 md:p-10 backdrop-blur-xl shadow-[0_18px_50px_rgba(0,0,0,0.14)] transition-all duration-500 hover:scale-[1.02] hover:bg-white/[0.08] hover:shadow-2xl hover:shadow-primary/10 hover:z-10 cursor-pointer">
+          <div key={index} className="group/card rounded-[2rem] bg-white/[0.035] p-8 md:p-10 backdrop-blur-xl shadow-[0_18px_50px_rgba(0,0,0,0.14)] transition-all duration-500 hover:scale-[1.02] hover:bg-white/[0.08] hover:shadow-2xl hover:shadow-primary/10 hover:z-10 cursor-pointer">
             <div className="text-primary text-sm font-mono mb-5">{index}</div>
-            <h3 className="text-2xl font-bold text-white mb-4">{title}</h3>
-            <p className="text-slate-300 leading-relaxed font-normal">{description}</p>
+            <h3 className="text-2xl font-bold text-white mb-4 transition-colors group-hover/card:text-primary">{title}</h3>
+            <p className="text-slate-300 leading-relaxed font-normal transition-colors duration-300 group-hover/card:text-slate-200">{description}</p>
           </div>
         ))}
       </div>
@@ -516,21 +520,21 @@ const Roles = () => (
             </div>
             <div className="group/card p-8 rounded-3xl bg-white/[0.03] border border-white/5 transition-all duration-300 hover:scale-105 hover:bg-white/[0.08] hover:border-white/20 hover:shadow-2xl hover:shadow-primary/10 hover:z-10 relative cursor-pointer">
               <div className="text-white font-bold mb-2 transition-colors group-hover/card:text-primary">产品组织者</div>
-              <p className="text-sm text-slate-400 transition-colors duration-300 group-hover/card:text-slate-200 leading-relaxed">能规划AI落地的最优路径，平衡理想与现实的交付。</p>
+              <p className="text-sm text-slate-400 transition-colors duration-300 group-hover/card:text-slate-200 leading-relaxed">能把零散的想法讲清楚、收拢起来，帮一个方向更快进入验证和推进。</p>
             </div>
             <div className="group/card p-8 rounded-3xl bg-white/[0.03] border border-white/5 transition-all duration-300 hover:scale-105 hover:bg-white/[0.08] hover:border-white/20 hover:shadow-2xl hover:shadow-primary/10 hover:z-10 relative cursor-pointer">
               <div className="text-white font-bold mb-2 transition-colors group-hover/card:text-primary">技术实践者</div>
-              <p className="text-sm text-slate-400 transition-colors duration-300 group-hover/card:text-slate-200 leading-relaxed">渴望亲手实现、快速迭代，不满足于理论的极客。</p>
+              <p className="text-sm text-slate-400 transition-colors duration-300 group-hover/card:text-slate-200 leading-relaxed">愿意亲手试、亲手做，把一个想法尽快跑成看得见、摸得着的 demo。</p>
             </div>
             <div className="group/card p-8 rounded-3xl bg-white/[0.03] border border-white/5 transition-all duration-300 hover:scale-105 hover:bg-white/[0.08] hover:border-white/20 hover:shadow-2xl hover:shadow-primary/10 hover:z-10 relative cursor-pointer">
               <div className="text-white font-bold mb-2 transition-colors group-hover/card:text-primary">创新推动者</div>
-              <p className="text-sm text-slate-400 transition-colors duration-300 group-hover/card:text-slate-200 leading-relaxed">敢于打破现有流程边界，为团队带来未知可能的探索者。</p>
+              <p className="text-sm text-slate-400 transition-colors duration-300 group-hover/card:text-slate-200 leading-relaxed">敢于拉人一起试、一起改，把零散的热情和灵感真正推成进展。</p>
             </div>
           </div>
         </div>
         <div className="order-1 lg:order-2">
           <span className="text-[11px] font-black text-slate-500 block mb-6">
-            <span className="uppercase tracking-[0.32em]">Who We Want</span>
+            <span className="uppercase tracking-[0.24em]">Who We're Looking For</span>
             <span className="mx-3 text-slate-700">/</span>
             <span>谁适合来</span>
           </span>
@@ -555,7 +559,7 @@ const FAQ = () => (
     <div className="max-w-4xl mx-auto">
       <div className="text-center mb-24">
         <span className="text-[11px] font-black text-slate-500 block mb-6">
-          <span className="uppercase tracking-[0.32em]">Clarification</span>
+          <span className="uppercase tracking-[0.24em]">Before You Join</span>
           <span className="mx-3 text-slate-700">/</span>
           <span>疑问解答</span>
         </span>
@@ -615,6 +619,20 @@ const FAQ = () => (
 
 const Apply = () => {
   const [copyState, setCopyState] = useState<'idle' | 'copied' | 'failed'>('idle');
+  const [formData, setFormData] = useState<SignupFormData>(emptySignupForm);
+  const [submitState, setSubmitState] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle');
+  const [submitMessage, setSubmitMessage] = useState('');
+
+  const handleFieldChange = (field: keyof SignupFormData) => (
+    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => {
+    setFormData((current) => ({ ...current, [field]: event.target.value }));
+
+    if (submitState !== 'idle') {
+      setSubmitState('idle');
+      setSubmitMessage('');
+    }
+  };
 
   const handleCopyGroupId = async () => {
     try {
@@ -637,6 +655,26 @@ const Apply = () => {
     window.setTimeout(() => setCopyState('idle'), 1800);
   };
 
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    if (submitState === 'submitting') {
+      return;
+    }
+
+    try {
+      setSubmitState('submitting');
+      setSubmitMessage('');
+      await signupsApi.create(formData);
+      setFormData(emptySignupForm);
+      setSubmitState('success');
+      setSubmitMessage('报名信息已提交，我们已经收到，后续会尽快查看。');
+    } catch (error) {
+      setSubmitState('error');
+      setSubmitMessage(error instanceof Error ? error.message : '提交失败，请稍后重试。');
+    }
+  };
+
   return (
     <section className="py-24 md:py-32 px-8 md:px-24 relative overflow-hidden" id="apply">
       <div className="absolute inset-0 bg-primary/[0.01] pointer-events-none"></div>
@@ -647,7 +685,7 @@ const Apply = () => {
             <div>
               <div className="flex items-center gap-3 mb-12">
                 <span className="size-2 bg-primary animate-pulse"></span>
-                <span className="text-[11px] font-mono font-black text-primary tracking-[0.28em] uppercase">Ready When You Are</span>
+                <span className="text-[11px] font-mono font-black text-primary tracking-[0.24em] uppercase">Start Here</span>
               </div>
               <h2 className="text-5xl font-bold mb-8 tracking-tighter leading-tight text-white">
                 带上你的 Idea，<br />现在入场
@@ -677,41 +715,103 @@ const Apply = () => {
             </div>
           </div>
           <div className="lg:col-span-3 p-12 md:p-16">
-            <form className="space-y-10" onSubmit={(e) => e.preventDefault()}>
+            <form className="space-y-10" onSubmit={handleSubmit}>
               <div className="grid md:grid-cols-3 gap-6 md:gap-10">
                 <div className="group space-y-2">
                   <label className="text-[11px] font-black text-slate-400 group-focus-within:text-primary transition-colors">姓名</label>
-                  <input className="w-full bg-white/[0.03] border border-white/8 rounded-xl px-6 py-4 focus:ring-2 focus:ring-primary/50 focus:bg-white/[0.08] outline-none transition-all placeholder:text-slate-600 text-slate-200" placeholder="您的真实姓名" type="text" />
+                  <input
+                    className="w-full bg-white/[0.03] border border-white/8 rounded-xl px-6 py-4 focus:ring-2 focus:ring-primary/50 focus:bg-white/[0.08] outline-none transition-all placeholder:text-slate-600 text-slate-200"
+                    onChange={handleFieldChange('name')}
+                    placeholder="您的真实姓名"
+                    required
+                    type="text"
+                    value={formData.name}
+                  />
                 </div>
                 <div className="group space-y-2">
                   <label className="text-[11px] font-black text-slate-400 group-focus-within:text-primary transition-colors">工号</label>
-                  <input className="w-full bg-white/[0.03] border border-white/8 rounded-xl px-6 py-4 focus:ring-2 focus:ring-primary/50 focus:bg-white/[0.08] outline-none transition-all placeholder:text-slate-600 text-slate-200" placeholder="您的工号" type="text" />
+                  <input
+                    className="w-full bg-white/[0.03] border border-white/8 rounded-xl px-6 py-4 focus:ring-2 focus:ring-primary/50 focus:bg-white/[0.08] outline-none transition-all placeholder:text-slate-600 text-slate-200"
+                    onChange={handleFieldChange('employeeId')}
+                    placeholder="例如：x01881212"
+                    required
+                    type="text"
+                    value={formData.employeeId}
+                  />
                 </div>
                 <div className="group space-y-2">
-                  <label className="text-[11px] font-black text-slate-400 group-focus-within:text-primary transition-colors">团队 / 岗位</label>
-                  <input className="w-full bg-white/[0.03] border border-white/8 rounded-xl px-6 py-4 focus:ring-2 focus:ring-primary/50 focus:bg-white/[0.08] outline-none transition-all placeholder:text-slate-600 text-slate-200" placeholder="例如：研发 / 产品 / 测试 / 平台" type="text" />
+                  <label className="text-[11px] font-black text-slate-400 group-focus-within:text-primary transition-colors">L3部门</label>
+                  <input
+                    className="w-full bg-white/[0.03] border border-white/8 rounded-xl px-6 py-4 focus:ring-2 focus:ring-primary/50 focus:bg-white/[0.08] outline-none transition-all placeholder:text-slate-600 text-slate-200"
+                    onChange={handleFieldChange('teamRole')}
+                    placeholder="例如：税务产品部"
+                    required
+                    type="text"
+                    value={formData.teamRole}
+                  />
                 </div>
               </div>
               <div className="group space-y-2">
                 <label className="text-[11px] font-black text-slate-400 group-focus-within:text-primary transition-colors">你最想参与哪一块</label>
-                <input className="w-full bg-white/[0.03] border border-white/8 rounded-xl px-6 py-4 focus:ring-2 focus:ring-primary/50 focus:bg-white/[0.08] outline-none transition-all placeholder:text-slate-600 text-slate-200" placeholder="例如：AI 情报站、实验室、训练营 / IdeaHub、工具引入与共创开发" type="text" />
+                <input
+                  className="w-full bg-white/[0.03] border border-white/8 rounded-xl px-6 py-4 focus:ring-2 focus:ring-primary/50 focus:bg-white/[0.08] outline-none transition-all placeholder:text-slate-600 text-slate-200"
+                  onChange={handleFieldChange('interestArea')}
+                  placeholder="例如：AI 情报站、实验室、训练营 / IdeaHub、工具引入与共创开发"
+                  required
+                  type="text"
+                  value={formData.interestArea}
+                />
               </div>
               <div className="group space-y-2">
                 <label className="text-[11px] font-black text-slate-400 group-focus-within:text-primary transition-colors">你最近最想解决的一个问题</label>
-                <textarea className="w-full bg-white/[0.03] border border-white/8 rounded-xl px-6 py-4 focus:ring-2 focus:ring-primary/50 focus:bg-white/[0.08] outline-none transition-all placeholder:text-slate-600 text-slate-200 min-h-[120px]" placeholder="比如：知识不好找、文档整理重复、协作流程太碎，或者某类工具明明值得引进来，却一直没人系统试过。" />
+                <textarea
+                  className="w-full bg-white/[0.03] border border-white/8 rounded-xl px-6 py-4 focus:ring-2 focus:ring-primary/50 focus:bg-white/[0.08] outline-none transition-all placeholder:text-slate-600 text-slate-200 min-h-[120px]"
+                  onChange={handleFieldChange('problem')}
+                  placeholder="比如：知识不好找、文档整理重复、协作流程太碎，或者某类工具明明值得引进来，却一直没人系统试过。"
+                  required
+                  value={formData.problem}
+                />
               </div>
               <div className="group space-y-2">
                 <label className="text-[11px] font-black text-slate-400 group-focus-within:text-primary transition-colors">相关经验或作品（可选）</label>
-                <input className="w-full bg-white/[0.03] border border-white/8 rounded-xl px-6 py-4 focus:ring-2 focus:ring-primary/50 focus:bg-white/[0.08] outline-none transition-all placeholder:text-slate-600 text-slate-200" placeholder="可以是 demo、脚本、教程、工具使用经验，或者一段靠谱的思考" type="text" />
+                <input
+                  className="w-full bg-white/[0.03] border border-white/8 rounded-xl px-6 py-4 focus:ring-2 focus:ring-primary/50 focus:bg-white/[0.08] outline-none transition-all placeholder:text-slate-600 text-slate-200"
+                  onChange={handleFieldChange('experience')}
+                  placeholder="可以是 demo、脚本、教程、工具使用经验，或者一段靠谱的思考"
+                  type="text"
+                  value={formData.experience}
+                />
               </div>
               <div className="group space-y-2">
                 <label className="text-[11px] font-black text-slate-400 group-focus-within:text-primary transition-colors">每周大概能投入多少时间</label>
-                <input className="w-full bg-white/[0.03] border border-white/8 rounded-xl px-6 py-4 focus:ring-2 focus:ring-primary/50 focus:bg-white/[0.08] outline-none transition-all placeholder:text-slate-600 text-slate-200" placeholder="例如：每周 2 小时 / 每周半天 / 有项目时可集中投入" type="text" />
+                <input
+                  className="w-full bg-white/[0.03] border border-white/8 rounded-xl px-6 py-4 focus:ring-2 focus:ring-primary/50 focus:bg-white/[0.08] outline-none transition-all placeholder:text-slate-600 text-slate-200"
+                  onChange={handleFieldChange('weeklyCommitment')}
+                  placeholder="例如：每周 2 小时 / 每周半天 / 有项目时可集中投入"
+                  required
+                  type="text"
+                  value={formData.weeklyCommitment}
+                />
               </div>
+              {submitMessage && (
+                <div
+                  className={`rounded-[1.5rem] border px-5 py-4 text-sm leading-7 ${
+                    submitState === 'error'
+                      ? 'border-red-500/20 bg-red-500/10 text-red-200'
+                      : 'border-emerald-500/20 bg-emerald-500/10 text-emerald-100'
+                  }`}
+                >
+                  {submitMessage}
+                </div>
+              )}
               <div className="pt-6">
-                <button className="relative group/btn w-full overflow-hidden bg-primary text-white h-16 px-12 rounded-full font-black text-[12px] tracking-[0.16em] glow-effect hover:scale-[1.01] active:scale-95 transition-all">
+                <button
+                  className="relative group/btn w-full overflow-hidden bg-primary text-white h-16 px-12 rounded-full font-black text-[12px] tracking-[0.16em] glow-effect hover:scale-[1.01] active:scale-95 transition-all disabled:cursor-not-allowed disabled:opacity-70"
+                  disabled={submitState === 'submitting'}
+                  type="submit"
+                >
                   <span className="relative z-10 flex items-center justify-center gap-3">
-                    加入试验场
+                    {submitState === 'submitting' ? '提交中...' : '加入试验场'}
                     <span className="material-symbols-outlined text-sm">login</span>
                   </span>
                   <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover/btn:translate-x-full transition-transform duration-1000"></div>
@@ -753,14 +853,14 @@ const Apply = () => {
   );
 };
 
-const Footer = () => (
+const Footer = ({ adminHref }: { adminHref: string }) => (
   <footer className="py-24 px-8 md:px-24 border-t border-white/5 bg-[#030508]">
     <div className="max-w-[1600px] mx-auto">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-12 mb-16">
         <div className="flex flex-col gap-4">
           <div className="flex items-center gap-4">
             <span className="material-symbols-outlined text-primary text-2xl">science</span>
-            <span className="text-xs font-bold tracking-[0.24em] uppercase">AI Laboratory</span>
+            <span className="text-xs font-bold tracking-[0.12em]">AI 试验场</span>
           </div>
           <p className="text-slate-500 text-[11px] font-medium tracking-wide">
             给愿意动手的人，留一个把想法做出来的地方
@@ -771,6 +871,7 @@ const Footer = () => (
           <a className="hover:text-white transition-colors" href="#directions">我们在做什么</a>
           <a className="hover:text-white transition-colors" href="#roles">怎么参与</a>
           <a className="hover:text-white transition-colors" href="#apply">我要报名</a>
+          <a className="hover:text-white transition-colors" href={adminHref}>报名管理</a>
         </div>
       </div>
       <div className="flex flex-col md:flex-row justify-between items-center gap-6 pt-12 border-t border-white/[0.03]">
@@ -786,6 +887,15 @@ const Footer = () => (
 );
 
 export default function App() {
+  const publicHref = import.meta.env.BASE_URL;
+  const adminHref = `${import.meta.env.BASE_URL}?mode=admin`;
+  const isAdminMode =
+    typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('mode') === 'admin';
+
+  if (isAdminMode) {
+    return <AdminDashboard publicHref={publicHref} />;
+  }
+
   return (
     <div className="min-h-screen">
       <Header />
@@ -798,7 +908,7 @@ export default function App() {
         <FAQ />
         <Apply />
       </main>
-      <Footer />
+      <Footer adminHref={adminHref} />
     </div>
   );
 }
