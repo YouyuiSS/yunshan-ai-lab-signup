@@ -45,7 +45,6 @@ export const requiredSignupFields: Array<keyof SignupFormData> = [
   'employeeId',
   'teamRole',
   'interestArea',
-  'problem',
   'weeklyCommitment',
 ];
 

@@ -37,6 +37,9 @@ type SignupRow = {
   weekly_commitment: string;
 };
 
+const normalizedEmployeeIdExpression =
+  "case when employee_id = '' then employee_id else lower(left(employee_id, 1)) || substring(employee_id from 2) end";
+
 function parseJdbcUrl(jdbcUrl: string, user: string, password: string): ParsedDatabaseConfig {
   const matched = jdbcUrl.match(/^jdbc:postgresql:\/\/([^:/?#]+)(?::(\d+))?\/([^?]+)(?:\?(.*))?$/i);
 
@@ -143,6 +146,16 @@ function readTextField(payload: Record<string, unknown>, field: keyof SignupForm
   return value;
 }
 
+function normalizeEmployeeId(value: string): string {
+  const trimmed = value.trim();
+
+  if (!trimmed) {
+    return trimmed;
+  }
+
+  return `${trimmed.slice(0, 1).toLowerCase()}${trimmed.slice(1)}`;
+}
+
 const databaseConfig = resolveDatabaseConfig();
 const schemaName = normalizeSchema(databaseConfig.schema);
 const qualifiedTableName = `${quoteIdentifier(schemaName)}.${quoteIdentifier('ai_lab_signups')}`;
@@ -193,6 +206,30 @@ export async function ensureDatabaseReady(): Promise<void> {
 
   await pool.query(`create index if not exists ai_lab_signups_created_at_idx on ${qualifiedTableName} (created_at desc)`);
   await pool.query(`create index if not exists ai_lab_signups_status_idx on ${qualifiedTableName} (status)`);
+
+  const duplicateEmployeeIds = await pool.query<{ normalized_employee_id: string; count: string }>(`
+    select
+      ${normalizedEmployeeIdExpression} as normalized_employee_id,
+      count(*)::text as count
+    from ${qualifiedTableName}
+    group by 1
+    having count(*) > 1
+    limit 1
+  `);
+
+  if (duplicateEmployeeIds.rowCount === 0) {
+    await pool.query(`
+      create unique index if not exists ai_lab_signups_employee_id_normalized_uidx
+      on ${qualifiedTableName} ((${normalizedEmployeeIdExpression}))
+    `);
+  } else {
+    await pool.query(`
+      create index if not exists ai_lab_signups_employee_id_normalized_idx
+      on ${qualifiedTableName} ((${normalizedEmployeeIdExpression}))
+    `);
+
+    console.warn('检测到工号重复数据，暂未创建唯一索引，请先清理重复报名记录。');
+  }
 }
 
 export async function listSignups(): Promise<SignupRecord[]> {
@@ -223,56 +260,78 @@ export async function createSignup(payload: Record<string, unknown>, id: string)
   });
 
   const signup: SignupFormData = {
-    employeeId: readTextField(payload, 'employeeId', true),
+    employeeId: normalizeEmployeeId(readTextField(payload, 'employeeId', true)),
     experience: readTextField(payload, 'experience'),
     interestArea: readTextField(payload, 'interestArea', true),
     name: readTextField(payload, 'name', true),
-    problem: readTextField(payload, 'problem', true),
+    problem: readTextField(payload, 'problem'),
     teamRole: readTextField(payload, 'teamRole', true),
     weeklyCommitment: readTextField(payload, 'weeklyCommitment', true),
   };
 
-  const result = await pool.query<SignupRow>(
+  const existingSignup = await pool.query<{ id: string }>(
     `
-      insert into ${qualifiedTableName} (
-        id,
-        name,
-        employee_id,
-        team_role,
-        interest_area,
-        problem,
-        experience,
-        weekly_commitment,
-        status,
-        note
-      ) values ($1, $2, $3, $4, $5, $6, $7, $8, 'pending', '')
-      returning
-        id,
-        name,
-        employee_id,
-        team_role,
-        interest_area,
-        problem,
-        experience,
-        weekly_commitment,
-        status,
-        note,
-        created_at,
-        updated_at
+      select id
+      from ${qualifiedTableName}
+      where ${normalizedEmployeeIdExpression} = $1
+      limit 1
     `,
-    [
-      id,
-      signup.name,
-      signup.employeeId,
-      signup.teamRole,
-      signup.interestArea,
-      signup.problem,
-      signup.experience,
-      signup.weeklyCommitment,
-    ],
+    [signup.employeeId],
   );
 
-  return mapSignupRow(result.rows[0]);
+  if (existingSignup.rowCount > 0) {
+    throw new Error('该工号已提交过报名，请勿重复提交');
+  }
+
+  try {
+    const result = await pool.query<SignupRow>(
+      `
+        insert into ${qualifiedTableName} (
+          id,
+          name,
+          employee_id,
+          team_role,
+          interest_area,
+          problem,
+          experience,
+          weekly_commitment,
+          status,
+          note
+        ) values ($1, $2, $3, $4, $5, $6, $7, $8, 'pending', '')
+        returning
+          id,
+          name,
+          employee_id,
+          team_role,
+          interest_area,
+          problem,
+          experience,
+          weekly_commitment,
+          status,
+          note,
+          created_at,
+          updated_at
+      `,
+      [
+        id,
+        signup.name,
+        signup.employeeId,
+        signup.teamRole,
+        signup.interestArea,
+        signup.problem,
+        signup.experience,
+        signup.weeklyCommitment,
+      ],
+    );
+
+    return mapSignupRow(result.rows[0]);
+  } catch (error) {
+    if (typeof error === 'object' && error && 'code' in error && error.code === '23505') {
+      throw new Error('该工号已提交过报名，请勿重复提交');
+    }
+
+    throw error;
+  }
 }
 
 export async function updateSignup(id: string, payload: Record<string, unknown>): Promise<SignupRecord | null> {

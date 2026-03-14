@@ -3,6 +3,7 @@ import type {
   SignupRecord,
   SignupUpdatePayload,
 } from '../shared/signups.ts';
+import type { AiSuggestion, AiSuggestionRequest } from '../shared/ai.ts';
 
 const apiBasePath = `${import.meta.env.BASE_URL}api`;
 
@@ -56,6 +57,15 @@ export const signupsApi = {
     return request<SignupRecord>(`/signups/${id}`, {
       body: JSON.stringify(payload),
       method: 'PATCH',
+    });
+  },
+};
+
+export const aiApi = {
+  suggest(payload: AiSuggestionRequest) {
+    return request<AiSuggestion>('/ai/suggestions', {
+      body: JSON.stringify(payload),
+      method: 'POST',
     });
   },
 };

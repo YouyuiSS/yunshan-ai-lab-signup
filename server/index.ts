@@ -12,6 +12,8 @@ import {
   listSignups,
   updateSignup,
 } from './database.ts';
+import { generateAiSuggestion, isAiAssistantConfigured } from './llm.ts';
+import type { AiSuggestionRequest } from '../shared/ai.ts';
 
 dotenv.config({ path: '.env.local', quiet: true });
 dotenv.config({ quiet: true });
@@ -43,6 +45,10 @@ apiRouter.use(express.json({ limit: '1mb' }));
 
 apiRouter.get('/health', (_request, response) => {
   response.json({ ok: true });
+});
+
+apiRouter.get('/ai/health', (_request, response) => {
+  response.json({ configured: isAiAssistantConfigured(), ok: true });
 });
 
 apiRouter.get('/signups', async (_request, response, next) => {
@@ -92,9 +98,37 @@ apiRouter.delete('/signups/:id', async (request, response, next) => {
   }
 });
 
+apiRouter.post('/ai/suggestions', async (request, response, next) => {
+  try {
+    const { input, mode } = request.body as Partial<AiSuggestionRequest>;
+
+    if (mode !== 'direction' && mode !== 'problem') {
+      response.status(400).json({ message: 'AI 模式不合法' });
+      return;
+    }
+
+    if (typeof input !== 'string' || !input.trim()) {
+      response.status(400).json({ message: 'AI 输入内容不能为空' });
+      return;
+    }
+
+    response.json(await generateAiSuggestion(input, mode));
+  } catch (error) {
+    next(error);
+  }
+});
+
 apiRouter.use((error: unknown, _request: express.Request, response: express.Response, _next: express.NextFunction) => {
   const message = error instanceof Error ? error.message : '服务器出了点问题，请稍后重试';
-  const statusCode = /不能为空|不合法|格式不正确|至少需要/.test(message) ? 400 : 500;
+  const statusCode = /已提交过报名|重复/.test(message)
+    ? 409
+    : /尚未配置/.test(message)
+      ? 503
+      : /超时/.test(message)
+        ? 504
+    : /不能为空|不合法|格式不正确|至少需要/.test(message)
+      ? 400
+      : 500;
 
   if (statusCode === 500) {
     console.error(error);

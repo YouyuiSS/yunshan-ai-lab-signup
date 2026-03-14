@@ -39,6 +39,20 @@
   }
 }
 
+@layer base {
+  button:not(:disabled),
+  [role="button"]:not([aria-disabled="true"]),
+  a[href],
+  summary {
+    cursor: pointer;
+  }
+
+  button:disabled,
+  [aria-disabled="true"] {
+    cursor: not-allowed;
+  }
+}
+
 @keyframes subtle-drift {
   0% { transform: translate(0, 0); }
   50% { transform: translate(10px, -10px); }
