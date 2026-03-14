@@ -12,9 +12,23 @@ function normalizeBasePath(value?: string) {
   return withLeadingSlash.endsWith('/') ? withLeadingSlash : `${withLeadingSlash}/`;
 }
 
+function parseAllowedHosts(value?: string) {
+  if (!value) {
+    return undefined;
+  }
+
+  const hosts = value
+    .split(',')
+    .map((item) => item.trim())
+    .filter(Boolean);
+
+  return hosts.length > 0 ? hosts : undefined;
+}
+
 export default defineConfig(({mode}) => {
   const env = loadEnv(mode, '.', '');
   const basePath = normalizeBasePath(env.APP_BASE_PATH);
+  const allowedHosts = parseAllowedHosts(env.VITE_ALLOWED_HOSTS);
   return {
     base: basePath,
     plugins: [react(), tailwindcss()],
@@ -30,6 +44,7 @@ export default defineConfig(({mode}) => {
       // HMR is disabled in AI Studio via DISABLE_HMR env var.
       // Do not modifyâfile watching is disabled to prevent flickering during agent edits.
       hmr: process.env.DISABLE_HMR !== 'true',
+      allowedHosts,
       port: Number(env.VITE_PORT || '3000'),
       proxy: {
         [`${basePath}api`]: {

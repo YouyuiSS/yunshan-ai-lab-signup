@@ -145,7 +145,7 @@ const Hero = () => {
               <a href="#apply" className="inline-flex items-center justify-center bg-primary text-white h-14 px-10 rounded-full font-bold text-sm tracking-[0.16em] glow-effect hover:scale-105 transition-transform">
                 加入试验场
               </a>
-              <a className="flex items-center gap-4 text-slate-400 hover:text-white transition-colors group" href="#about">
+              <a className="flex items-center gap-4 text-slate-400 hover:text-white transition-colors group" href="#directions">
                 <span className="text-[11px] font-bold tracking-[0.12em]">看看我们在做什么</span>
                 <span className="material-symbols-outlined text-sm group-hover:translate-x-1 transition-transform">arrow_forward</span>
               </a>
