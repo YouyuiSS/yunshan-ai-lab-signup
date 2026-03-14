@@ -1,0 +1,54 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #1392ec;
+  --color-background-light: #f6f7f8;
+  --color-background-dark: #05070a;
+  --font-display: "Space Grotesk", "Noto Sans SC", sans-serif;
+}
+
+@layer utilities {
+  .glass-card {
+    background: rgba(255, 255, 255, 0.02);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+  }
+  .glow-effect {
+    box-shadow: 0 0 40px rgba(19, 146, 236, 0.25);
+  }
+  .text-gradient {
+    background: linear-gradient(to bottom, #ffffff 40%, rgba(255, 255, 255, 0.4) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .grid-bg {
+    background-image: radial-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+    background-size: 40px 40px;
+  }
+  .bg-typography {
+    font-size: 20rem;
+    line-height: 1;
+    font-weight: 900;
+    color: rgba(255, 255, 255, 0.02);
+    user-select: none;
+    pointer-events: none;
+  }
+  .input-glow:focus-within {
+    box-shadow: 0 0 15px rgba(19, 146, 236, 0.15);
+    border-color: rgba(19, 146, 236, 0.4);
+  }
+}
+
+@keyframes subtle-drift {
+  0% { transform: translate(0, 0); }
+  50% { transform: translate(10px, -10px); }
+  100% { transform: translate(0, 0); }
+}
+
+.drift {
+  animation: subtle-drift 15s infinite ease-in-out;
+}
+
+body {
+  @apply bg-background-dark font-display text-slate-200 selection:bg-primary/30 overflow-x-hidden;
+}
