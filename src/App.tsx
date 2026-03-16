@@ -1093,7 +1093,8 @@ const Apply = () => {
         return Boolean(
           formData.name.trim() &&
           formData.employeeId.trim() &&
-          formData.teamRole.trim(),
+          formData.teamRole.trim() &&
+          formData.experience.trim(),
         );
       case 1:
         return Boolean(formData.interestArea.trim());
