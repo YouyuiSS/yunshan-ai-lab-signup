@@ -1,8 +1,8 @@
 export const aiSuggestionAreas = [
-  'AI 情报站',
+  'AI情报站',
   '实验室',
-  '训练营 / IdeaHub',
-  '工具引入与共创开发',
+  'IdeaHub训练营',
+  'AI赋能落地',
 ] as const;
 
 export type AiSuggestionArea = (typeof aiSuggestionAreas)[number];

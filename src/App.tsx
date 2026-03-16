@@ -1421,14 +1421,10 @@ const Apply = () => {
                     <p className="text-sm leading-7 text-slate-300">{problemSuggestion.summary}</p>
                   </div>
                   <div>
-                    <div className="mb-2 text-[11px] font-bold text-slate-500">更适合的参与方向</div>
-                    <p className="text-lg font-bold text-primary">{problemSuggestion.suggestedArea}</p>
-                  </div>
-                  <div>
                     <div className="mb-2 text-[11px] font-bold text-slate-500">可以先怎么试</div>
                     <p className="text-sm leading-7 text-slate-300">{problemSuggestion.nextStep}</p>
                   </div>
-                  <div>
+                  <div className="md:col-span-2">
                     <div className="mb-2 text-[11px] font-bold text-slate-500">整理后的简洁表述</div>
                     <p className="text-sm leading-7 text-slate-200">{problemSuggestion.polishedProblem}</p>
                   </div>

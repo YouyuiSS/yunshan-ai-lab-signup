@@ -3,6 +3,7 @@ import {
   isAiSuggestionArea,
   type AiAssistMode,
   type AiSuggestion,
+  type AiSuggestionArea,
 } from '../shared/ai.ts';
 
 type OpenAiCompatibleConfig = {
@@ -62,13 +63,12 @@ function getOpenAiCompatibleConfig(): OpenAiCompatibleConfig {
 function buildSystemPrompt(mode: AiAssistMode): string {
   const modeGuidance =
     mode === 'direction'
-      ? '结合用户的方向兴趣、经验和参与方式，判断最合适的方向。'
-      : '把用户的问题整理得更具体、更像一个可推进的问题陈述。';
+      ? `结合用户的方向兴趣、经验和参与方式，判断最合适的方向。suggestedArea 必须严格从这四个值中选择一个：${aiSuggestionAreas.join('、')}。`
+      : '把用户的问题整理得更具体、更像一个可推进的问题陈述。suggestedArea 固定输出空字符串 ""。';
 
   return [
     '你是“奇点俱乐部”报名页里的中文 AI 助手。',
     modeGuidance,
-    `suggestedArea 必须严格从这四个值中选择一个：${aiSuggestionAreas.join('、')}。`,
     '请只输出一个 JSON 对象，不要输出 Markdown，不要加代码块。',
     'JSON 必须包含这五个字段：summary、suggestedArea、reason、nextStep、polishedProblem。',
     '每个字段都使用中文，简洁、友好、可执行，长度控制在 1 到 2 句话。',
@@ -98,7 +98,7 @@ function sanitizeSuggestion(payload: unknown): AiSuggestion {
   const nextStep = typeof record.nextStep === 'string' ? record.nextStep.trim() : '';
   const polishedProblem = typeof record.polishedProblem === 'string' ? record.polishedProblem.trim() : '';
 
-  if (!summary || !reason || !nextStep || !polishedProblem || !isAiSuggestionArea(suggestedArea)) {
+  if (!summary || !reason || !nextStep || !polishedProblem || (suggestedArea !== '' && !isAiSuggestionArea(suggestedArea))) {
     throw new Error('AI 返回结果缺少必要字段');
   }
 
@@ -106,7 +106,7 @@ function sanitizeSuggestion(payload: unknown): AiSuggestion {
     nextStep,
     polishedProblem,
     reason,
-    suggestedArea,
+    suggestedArea: suggestedArea as AiSuggestionArea,
     summary,
   };
 }
