@@ -42,7 +42,7 @@ const interestAreaOptions = [
     value: '训练营 / IdeaHub',
   },
   {
-    description: '把工具和流程真正接起来，做成能跑的东西。',
+    description: '萃取实战经验，输出最佳实践，为大家赋能。',
     title: '效能学堂',
     value: '效能学堂',
   },
