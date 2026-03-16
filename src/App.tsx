@@ -43,8 +43,8 @@ const interestAreaOptions = [
   },
   {
     description: '把工具和流程真正接起来，做成能跑的东西。',
-    title: '工具引入与共创开发',
-    value: '工具引入与共创开发',
+    title: 'AI 赋能落地',
+    value: 'AI 赋能落地',
   },
 ] as const;
 
@@ -627,9 +627,9 @@ const Directions = () => (
         <div className="md:col-span-8 group/card relative overflow-hidden rounded-[2rem] glass-card p-10 md:p-12 transition-all duration-500 hover:scale-[1.02] hover:bg-white/[0.08] hover:border-white/20 hover:shadow-2xl hover:shadow-primary/10 hover:z-10 cursor-pointer bg-primary/5">
           <div className="relative z-10 max-w-lg">
             <span className="text-[11px] font-bold text-primary mb-4 block">正在进行 04</span>
-            <h3 className="text-3xl font-bold mb-4 text-white transition-colors group-hover/card:text-primary">工具引入与共创开发</h3>
+            <h3 className="text-3xl font-bold mb-4 text-white transition-colors group-hover/card:text-primary">AI 赋能落地</h3>
             <p className="text-slate-300 text-base font-normal leading-relaxed transition-colors duration-300 group-hover/card:text-slate-200">
-              从 openclaw、Claude Code 这样的现成工具，到我们自己动手做的小工具、小流程、小平台，能带来真实改进的，就值得认真推进。
+              把验证成功的好工具大规模推广成全员的“标准动作”。交付正式内部工具、制定 SOP、进行赋能培训，让原本不懂 AI 的同事也能直接获益。
             </p>
           </div>
           <span className="material-symbols-outlined absolute right-8 bottom-8 text-[120px] text-white/[0.02] group-hover/card:text-primary/10 transition-colors duration-700">terminal</span>
@@ -1271,7 +1271,7 @@ const Apply = () => {
               return (
                 <button
                   key={option.value}
-                  className={`rounded-[2rem] border p-7 text-left transition-all duration-300 ${isActive
+                  className={`flex flex-col items-start justify-start rounded-[2rem] border p-7 text-left transition-all duration-300 ${isActive
                     ? 'border-primary/50 bg-primary/10 shadow-[0_18px_40px_rgba(242,125,38,0.12)]'
                     : 'border-white/10 bg-white/[0.04] hover:border-white/20 hover:bg-white/[0.08]'
                     }`}
@@ -1299,12 +1299,12 @@ const Apply = () => {
           <div className="space-y-4">
             <span className="inline-flex items-center gap-3 rounded-full border border-white/10 bg-white/[0.04] px-4 py-2 text-[11px] font-bold text-slate-400">
               <span className="size-2 rounded-full bg-primary"></span>
-                第三步 / 明确参与方式
-              </span>
-              <h3 className="text-4xl md:text-5xl font-bold tracking-tight text-white">规划你的参与节奏与方式</h3>
-              <p className="max-w-2xl text-lg leading-relaxed text-slate-400">
-                我们尊重每位成员的时间与节奏。请告诉我们你预期的投入精力与起步方式，哪怕是最轻量的一步，也是良好合作的开始。
-              </p>
+              第三步 / 明确参与方式
+            </span>
+            <h3 className="text-4xl md:text-5xl font-bold tracking-tight text-white">规划你的参与节奏与方式</h3>
+            <p className="max-w-2xl text-lg leading-relaxed text-slate-400">
+              我们尊重每位成员的时间与节奏。请告诉我们你预期的投入精力与起步方式，哪怕是最轻量的一步，也是良好合作的开始。
+            </p>
           </div>
           <div className="space-y-8">
             <div>
@@ -1364,14 +1364,14 @@ const Apply = () => {
           <div className="space-y-4">
             <span className="inline-flex items-center gap-3 rounded-full border border-white/10 bg-white/[0.04] px-4 py-2 text-[11px] font-bold text-slate-400">
               <span className="size-2 rounded-full bg-primary"></span>
-                第四步 / 补充需求场景
-              </span>
-              <h3 className="text-4xl md:text-5xl font-bold tracking-tight text-white">
-                有什么期待用 AI 解决的痛点吗？
-              </h3>
-              <p className="max-w-2xl text-lg leading-relaxed text-slate-400">
-                此项为选填。如果在工作中遇到了期望被优化的环节，或者有一个模糊的想法，不妨写下来，让 AI 帮我们一起梳理出落地方案。
-              </p>
+              第四步 / 补充需求场景
+            </span>
+            <h3 className="text-4xl md:text-5xl font-bold tracking-tight text-white">
+              有什么期待用 AI 解决的痛点吗？
+            </h3>
+            <p className="max-w-2xl text-lg leading-relaxed text-slate-400">
+              此项为选填。如果在工作中遇到了期望被优化的环节，或者有一个模糊的想法，不妨写下来，让 AI 帮我们一起梳理出落地方案。
+            </p>
           </div>
           <div className="space-y-5">
             <textarea
@@ -1441,12 +1441,12 @@ const Apply = () => {
           <div className="space-y-4">
             <span className="inline-flex items-center gap-3 rounded-full border border-white/10 bg-white/[0.04] px-4 py-2 text-[11px] font-bold text-slate-400">
               <span className="size-2 rounded-full bg-primary"></span>
-                第五步 / 确认报名信息
-              </span>
-              <h3 className="text-4xl md:text-5xl font-bold tracking-tight text-white">确认信息，准备开启探索</h3>
-              <p className="max-w-2xl text-lg leading-relaxed text-slate-400">
-                这不仅仅是一份报名表，更是迈向 AI 实践的第一步。请核对提交信息，确认无误后，期待我们在实验室正式相聚！
-              </p>
+              第五步 / 确认报名信息
+            </span>
+            <h3 className="text-4xl md:text-5xl font-bold tracking-tight text-white">确认信息，准备开启探索</h3>
+            <p className="max-w-2xl text-lg leading-relaxed text-slate-400">
+              这不仅仅是一份报名表，更是迈向 AI 实践的第一步。请核对提交信息，确认无误后，期待我们在实验室正式相聚！
+            </p>
           </div>
           <div className="rounded-[2.25rem] border border-white/10 bg-white/[0.04] p-7 md:p-8">
             <div className="grid gap-6 md:grid-cols-2">
@@ -1463,7 +1463,7 @@ const Apply = () => {
               <div className="rounded-[1.75rem] border border-white/10 bg-black/20 p-6 md:col-span-2">
                 <div className="mb-2 text-[11px] font-bold text-slate-500">你最想解决的问题</div>
                 <p className="text-base leading-8 text-slate-200">
-                   {formData.problem || '暂未填写需求。后续可随时向实验室同步你发现的真实痛点。'}
+                  {formData.problem || '暂未填写需求。后续可随时向实验室同步你发现的真实痛点。'}
                 </p>
               </div>
               <div className="rounded-[1.75rem] border border-white/10 bg-black/20 p-6">
@@ -1471,7 +1471,7 @@ const Apply = () => {
                 <div className="text-sm leading-7 text-slate-300">
                   {formData.participationModes.length > 0
                     ? formData.participationModes.join('、')
-                     : '可从任意切入点开启实验，团队将协助你完成方案落地。'}
+                    : '可从任意切入点开启实验，团队将协助你完成方案落地。'}
                 </div>
               </div>
               <div className="rounded-[1.75rem] border border-white/10 bg-black/20 p-6">
@@ -1568,13 +1568,13 @@ const Apply = () => {
               <div className="flex items-center justify-between gap-4">
                 <div>
                   <div className="text-[11px] font-bold uppercase tracking-[0.22em] text-slate-500">Just Watch First</div>
-              <h3 className="mt-3 text-2xl font-bold text-white">加入社群，开启 AI 视野</h3>
-            </div>
-            <span className="material-symbols-outlined text-2xl text-primary">groups</span>
-          </div>
-          <p className="mt-4 text-sm leading-7 text-slate-400">
-            欢迎先进入社群了解实验室的运转氛围。观察真实的创意流转与项目落地，等到时机成熟再开启你的实验。
-          </p>
+                  <h3 className="mt-3 text-2xl font-bold text-white">加入社群，开启 AI 视野</h3>
+                </div>
+                <span className="material-symbols-outlined text-2xl text-primary">groups</span>
+              </div>
+              <p className="mt-4 text-sm leading-7 text-slate-400">
+                欢迎先进入社群了解实验室的运转氛围。观察真实的创意流转与项目落地，等到时机成熟再开启你的实验。
+              </p>
               <div className="mt-8 rounded-[2rem] border border-primary/20 bg-white px-5 py-5 shadow-[0_20px_60px_rgba(0,0,0,0.22)]">
                 <img
                   alt="WeLink 群二维码"
