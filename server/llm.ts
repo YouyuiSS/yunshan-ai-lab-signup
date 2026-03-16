@@ -63,7 +63,14 @@ function getOpenAiCompatibleConfig(): OpenAiCompatibleConfig {
 function buildSystemPrompt(mode: AiAssistMode): string {
   const modeGuidance =
     mode === 'direction'
-      ? `结合用户的方向兴趣、经验和参与方式，判断最合适的方向。suggestedArea 必须严格从这四个值中选择一个：${aiSuggestionAreas.join('、')}。`
+      ? `结合用户的方向兴趣、经验和参与方式，判断最合适的方向。
+四个候选方向的定义如下：
+- AI 情报站：关注工具、方法和趋势，筛出真正值得试的方向。
+- 实验室：做工具解析、demo、教程和第一轮验证。
+- 训练营 / IdeaHub：把问题和想法收进来，拉人一起共创推进。
+- 效能学堂：萃取实战经验，输出最佳实践，为大家赋能。
+
+suggestedArea 必须严格从这四个值中选择一个：${aiSuggestionAreas.join('、')}。`
       : '把用户的问题整理得更具体、更像一个可推进的问题陈述。suggestedArea 固定输出空字符串 ""。';
 
   return [
