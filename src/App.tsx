@@ -43,8 +43,8 @@ const interestAreaOptions = [
   },
   {
     description: '把工具和流程真正接起来，做成能跑的东西。',
-    title: 'AI 赋能落地',
-    value: 'AI 赋能落地',
+    title: '效能学堂',
+    value: '效能学堂',
   },
 ] as const;
 
@@ -627,7 +627,7 @@ const Directions = () => (
         <div className="md:col-span-8 group/card relative overflow-hidden rounded-[2rem] glass-card p-10 md:p-12 transition-all duration-500 hover:scale-[1.02] hover:bg-white/[0.08] hover:border-white/20 hover:shadow-2xl hover:shadow-primary/10 hover:z-10 cursor-pointer bg-primary/5">
           <div className="relative z-10 max-w-lg">
             <span className="text-[11px] font-bold text-primary mb-4 block">正在进行 04</span>
-            <h3 className="text-3xl font-bold mb-4 text-white transition-colors group-hover/card:text-primary">AI 赋能落地</h3>
+            <h3 className="text-3xl font-bold mb-4 text-white transition-colors group-hover/card:text-primary">效能学堂</h3>
             <p className="text-slate-300 text-base font-normal leading-relaxed transition-colors duration-300 group-hover/card:text-slate-200">
               把验证成功的好工具大规模推广成全员的“标准动作”。交付正式内部工具、制定 SOP、进行赋能培训，让原本不懂 AI 的同事也能直接获益。
             </p>
