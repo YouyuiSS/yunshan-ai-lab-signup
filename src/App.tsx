@@ -1163,7 +1163,7 @@ const Apply = () => {
               <textarea
                 className={`${inputClassName} min-h-[160px] leading-7 resize-none`}
                 onChange={handleFieldChange('experience')}
-                placeholder="可以是 demo、脚本、教程整理、工具使用经验，或者一段你自己的思考。这里我们会认真看。"
+                placeholder="可以是一段你对 AI 的思考、工具使用心得，也可以是你的实战产出（欢迎留下 Git、Wiki、文章等作品链接）。无论是简单的尝试还是深度洞察，我们都会认真看。"
                 value={formData.experience}
               />
             </div>
