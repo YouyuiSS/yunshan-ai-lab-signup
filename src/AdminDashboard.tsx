@@ -58,7 +58,7 @@ export default function AdminDashboard({ publicHref }: AdminDashboardProps) {
       signup.name,
       signup.employeeId,
       signup.teamRole,
-      signup.interestArea,
+      signup.interestArea.join(' '),
       signup.problem,
     ]
       .join(' ')
@@ -175,7 +175,7 @@ export default function AdminDashboard({ publicHref }: AdminDashboardProps) {
       姓名: signup.name,
       工号: signup.employeeId,
       L3部门: signup.teamRole,
-      想参与方向: signup.interestArea,
+      想参与方向: signup.interestArea.join('、'),
       最近最想解决的问题: signup.problem,
       相关经验或作品: signup.experience || '',
       每周投入时间: signup.weeklyCommitment,
@@ -332,7 +332,7 @@ export default function AdminDashboard({ publicHref }: AdminDashboardProps) {
                         <div className="mt-1 text-xs text-slate-500">工号 {signup.employeeId}</div>
                       </div>
                       <div className="text-sm text-slate-300">{signup.teamRole}</div>
-                      <div className="text-sm text-slate-300">{signup.interestArea}</div>
+                      <div className="text-sm text-slate-300">{signup.interestArea.join('、')}</div>
                       <div>
                         <span
                           className={`inline-flex rounded-full border px-3 py-1 text-xs font-bold ${statusClassName[signup.status]}`}
@@ -372,7 +372,7 @@ export default function AdminDashboard({ publicHref }: AdminDashboardProps) {
                 <div className="grid gap-4 md:grid-cols-2">
                   <div className="rounded-[1.25rem] border border-white/10 bg-white/[0.03] p-4">
                     <div className="text-[11px] font-bold uppercase tracking-[0.2em] text-slate-500">想参与方向</div>
-                    <div className="mt-3 text-sm leading-7 text-slate-200">{selectedSignup.interestArea}</div>
+                    <div className="mt-3 text-sm leading-7 text-slate-200">{selectedSignup.interestArea.join('、')}</div>
                   </div>
                   <div className="rounded-[1.25rem] border border-white/10 bg-white/[0.03] p-4">
                     <div className="text-[11px] font-bold uppercase tracking-[0.2em] text-slate-500">每周投入</div>

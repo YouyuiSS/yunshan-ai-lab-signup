@@ -110,12 +110,21 @@ function toIsoString(value: Date | string): string {
 }
 
 function mapSignupRow(row: SignupRow): SignupRecord {
+  let interestArea: string[] = [];
+
+  try {
+    const parsed = JSON.parse(row.interest_area);
+    interestArea = Array.isArray(parsed) ? (parsed as string[]) : [row.interest_area];
+  } catch {
+    interestArea = row.interest_area ? [row.interest_area] : [];
+  }
+
   return {
     createdAt: toIsoString(row.created_at),
     employeeId: row.employee_id,
     experience: row.experience,
     id: row.id,
-    interestArea: row.interest_area,
+    interestArea,
     name: row.name,
     note: row.note,
     problem: row.problem,
@@ -256,13 +265,30 @@ export async function listSignups(): Promise<SignupRecord[]> {
 
 export async function createSignup(payload: Record<string, unknown>, id: string): Promise<SignupRecord> {
   requiredSignupFields.forEach((field) => {
+    if (field === 'interestArea') {
+      const value = payload[field];
+
+      if (!Array.isArray(value) || value.length === 0) {
+        throw new Error('字段 interestArea 不能为空');
+      }
+
+      return;
+    }
+
     readTextField(payload, field, true);
   });
+
+  const interestAreaPayload = payload.interestArea;
+  const interestArea = Array.isArray(interestAreaPayload)
+    ? (interestAreaPayload as unknown[]).filter((item): item is string => typeof item === 'string')
+    : typeof interestAreaPayload === 'string' && interestAreaPayload.trim()
+      ? [interestAreaPayload.trim()]
+      : [];
 
   const signup: SignupFormData = {
     employeeId: normalizeEmployeeId(readTextField(payload, 'employeeId', true)),
     experience: readTextField(payload, 'experience'),
-    interestArea: readTextField(payload, 'interestArea', true),
+    interestArea,
     name: readTextField(payload, 'name', true),
     problem: readTextField(payload, 'problem'),
     teamRole: readTextField(payload, 'teamRole', true),
@@ -317,7 +343,7 @@ export async function createSignup(payload: Record<string, unknown>, id: string)
         signup.name,
         signup.employeeId,
         signup.teamRole,
-        signup.interestArea,
+        JSON.stringify(signup.interestArea),
         signup.problem,
         signup.experience,
         signup.weeklyCommitment,

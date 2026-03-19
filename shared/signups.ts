@@ -11,7 +11,7 @@ export type SignupFormData = {
   name: string;
   employeeId: string;
   teamRole: string;
-  interestArea: string;
+  interestArea: string[];
   problem: string;
   experience: string;
   weeklyCommitment: string;
@@ -34,7 +34,7 @@ export const emptySignupForm: SignupFormData = {
   name: '',
   employeeId: '',
   teamRole: '',
-  interestArea: '',
+  interestArea: [],
   problem: '',
   experience: '',
   weeklyCommitment: '',

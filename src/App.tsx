@@ -38,8 +38,8 @@ const interestAreaOptions = [
   },
   {
     description: '把问题和想法收进来，拉人一起共创推进。',
-    title: '训练营 / IdeaHub',
-    value: '训练营 / IdeaHub',
+    title: '训练营',
+    value: '训练营',
   },
   {
     description: '萃取实战经验，输出最佳实践，为大家赋能。',
@@ -118,7 +118,9 @@ function readApplyDraft(): ApplyDraft | null {
       formData: {
         employeeId: typeof formData.employeeId === 'string' ? formData.employeeId : '',
         experience: typeof formData.experience === 'string' ? formData.experience : '',
-        interestArea: typeof formData.interestArea === 'string' ? formData.interestArea : '',
+        interestArea: Array.isArray(formData.interestArea)
+          ? formData.interestArea.filter((item): item is string => typeof item === 'string')
+          : [],
         name: typeof formData.name === 'string' ? formData.name : '',
         participationModes: Array.isArray(formData.participationModes)
           ? formData.participationModes.filter((item): item is string => typeof item === 'string')
@@ -148,7 +150,7 @@ function buildSubmitPayload(formData: ApplyFlowData): SignupFormData {
   return {
     employeeId: formData.employeeId.trim(),
     experience: experienceBlocks.join('\n\n'),
-    interestArea: formData.interestArea.trim(),
+    interestArea: formData.interestArea,
     name: formData.name.trim(),
     problem: formData.problem.trim(),
     teamRole: formData.teamRole.trim(),
@@ -880,11 +882,23 @@ const Apply = () => {
       setProblemError('');
     }
 
-    if (field === 'interestArea' || field === 'experience') {
+    if (field === 'experience') {
       setDirectionSuggestion(null);
       setDirectionError('');
     }
 
+    resetSubmitFeedback();
+  };
+
+  const handleToggleInterestArea = (area: string) => {
+    setFormData((current) => ({
+      ...current,
+      interestArea: current.interestArea.includes(area)
+        ? current.interestArea.filter((item) => item !== area)
+        : [...current.interestArea, area],
+    }));
+    setDirectionSuggestion(null);
+    setDirectionError('');
     resetSubmitFeedback();
   };
 
@@ -1005,7 +1019,7 @@ const Apply = () => {
 
     setFormData((current) => ({
       ...current,
-      interestArea: directionSuggestion.suggestedArea,
+      interestArea: [directionSuggestion.suggestedArea],
     }));
     setShowDirectionHelper(false);
     resetSubmitFeedback();
@@ -1018,7 +1032,7 @@ const Apply = () => {
 
     setFormData((current) => ({
       ...current,
-      interestArea: current.interestArea.trim() ? current.interestArea : problemSuggestion.suggestedArea,
+      interestArea: current.interestArea.length > 0 ? current.interestArea : [problemSuggestion.suggestedArea],
       problem: problemSuggestion.polishedProblem,
     }));
     resetSubmitFeedback();
@@ -1097,7 +1111,7 @@ const Apply = () => {
           formData.experience.trim(),
         );
       case 1:
-        return Boolean(formData.interestArea.trim());
+        return formData.interestArea.length > 0;
       case 2:
         return Boolean(formData.weeklyCommitment.trim());
       case 3:
@@ -1178,7 +1192,7 @@ const Apply = () => {
             <div className="space-y-4">
               <span className="inline-flex items-center gap-3 rounded-full border border-white/10 bg-white/[0.04] px-4 py-2 text-[11px] font-bold text-slate-400">
                 <span className="size-2 rounded-full bg-primary"></span>
-                第二步 / 选择一个探索领域
+                第二步 / 选择探索领域
               </span>
               <h3 className="text-4xl md:text-5xl font-bold tracking-tight text-white">选择你感兴趣的行动方向</h3>
               <p className="max-w-2xl text-lg leading-relaxed text-slate-400">
@@ -1266,7 +1280,7 @@ const Apply = () => {
 
           <div className="grid gap-4 md:grid-cols-2">
             {interestAreaOptions.map((option) => {
-              const isActive = formData.interestArea === option.value;
+              const isActive = formData.interestArea.includes(option.value);
 
               return (
                 <button
@@ -1275,10 +1289,7 @@ const Apply = () => {
                     ? 'border-primary/50 bg-primary/10 shadow-[0_18px_40px_rgba(242,125,38,0.12)]'
                     : 'border-white/10 bg-white/[0.04] hover:border-white/20 hover:bg-white/[0.08]'
                     }`}
-                  onClick={() => {
-                    setFormData((current) => ({ ...current, interestArea: option.value }));
-                    resetSubmitFeedback();
-                  }}
+                  onClick={() => handleToggleInterestArea(option.value)}
                   type="button"
                 >
                   <div className="mb-3 text-[11px] font-bold text-slate-500">方向候选</div>
@@ -1457,7 +1468,9 @@ const Apply = () => {
               </div>
               <div className="rounded-[1.75rem] border border-white/10 bg-black/20 p-6">
                 <div className="mb-2 text-[11px] font-bold text-slate-500">你更想从哪块开始</div>
-                <div className="text-xl font-bold text-primary">{formData.interestArea || '未选择'}</div>
+                <div className="text-xl font-bold text-primary">
+                  {formData.interestArea.length > 0 ? formData.interestArea.join('、') : '未选择'}
+                </div>
                 <div className="mt-2 text-sm text-slate-400">我们将根据此方向，为你匹配最合适的共创切入点。</div>
               </div>
               <div className="rounded-[1.75rem] border border-white/10 bg-black/20 p-6 md:col-span-2">

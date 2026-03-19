@@ -1,7 +1,7 @@
 export const aiSuggestionAreas = [
   'AI情报站',
   '实验室',
-  'IdeaHub训练营',
+  '训练营',
   '效能学堂',
 ] as const;
 
